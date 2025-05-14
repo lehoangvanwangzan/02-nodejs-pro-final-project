@@ -2,11 +2,9 @@ import { prisma } from "./client";
 
 const initDatabase = async () => {
     const userCount = await prisma.user.count();
-    if (userCount > 0) {
-        console.log("Database already seeded");
-    } else {
+    const countRole = await prisma.role.count();
+    if (userCount === 0) {
         console.log("Seeding database...");
-
         await prisma.user.createMany({
             data: [
                 {
@@ -35,6 +33,28 @@ const initDatabase = async () => {
                 }
             ]
         })
+    } else if (countRole === 0) {
+        await prisma.role.createMany({
+            data: [
+                {
+                    name: "admin",
+                    description: "Quản trị viên",
+
+                },
+                {
+                    name: "client",
+                    description: "Khách hàng",
+
+                },
+                {
+                    name: "staff",
+                    description: "Nhân viên",
+
+                }
+            ]
+        })
+    } else {
+        console.log("Database already seeded");
     }
 }
 export default initDatabase;
